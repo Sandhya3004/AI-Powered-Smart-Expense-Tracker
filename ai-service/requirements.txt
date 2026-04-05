@@ -1,24 +1,51 @@
-fastapi==0.115.12
-uvicorn[standard]==0.34.0
-python-multipart==0.0.20
-pytesseract==0.3.13
-Pillow==11.1.0
-opencv-python==4.11.0.86
-easyocr==1.7.2
-SpeechRecognition==3.10.0
-openai-whisper==20231117
-scikit-learn==1.6.1
-pandas==2.2.3
-torch==2.2.2
-numpy>=1.26.0
-transformers==4.49.0
-prophet==1.1.6
-tensorflow==2.19.0
-joblib==1.4.2
-stanza==1.8.0
-spacy==3.7.2
-nltk==3.8.1
-redis==5.0.1
-python-jose[cryptography]==3.3.0
-python-dotenv==1.0.0
-requests==2.31.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Core web framework
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+# Fix setuptools issue
+setuptools>=65.5.0
+wheel
+
+# Compatible torch version
+torch==2.1.2
+
+# Core utilities
+Pillow
+numpy<2.0
+pandas
+
+# OCR and image processing
+pytesseract
+opencv-python
+easyocr
+
+# Voice processing
+SpeechRecognition
+openai-whisper
+
+# ML libraries
+scikit-learn
+joblib
+
+# NLP
+transformers
+nltk
+spacy
+stanza
+
+# Time series forecasting
+prophet
+
+# Deep learning (optional - heavy, remove if not needed)
+# tensorflow==2.19.0
+
+# Database
+redis
+
+# Security
+python-jose[cryptography]
+python-dotenv
