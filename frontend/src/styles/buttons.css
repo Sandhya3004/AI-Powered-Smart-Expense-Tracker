@@ -1,0 +1,93 @@
+/* Global Button Styles - Enhanced for better UX */
+
+/* Base button styles */
+button,
+[role="button"],
+.btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  line-height: 1.2;
+}
+
+/* Primary button */
+button.bg-gradient-to-r,
+.btn-primary {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(123, 111, 201, 0.3);
+  transition: all 0.2s ease;
+}
+
+button.bg-gradient-to-r:hover,
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(123, 111, 201, 0.4);
+}
+
+button.bg-gradient-to-r:active,
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(123, 111, 201, 0.3);
+}
+
+/* Secondary/Outline buttons */
+button[variant="outline"],
+.btn-secondary {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+/* Ghost buttons (icon buttons) */
+button[variant="ghost"],
+.btn-ghost {
+  padding: 10px;
+  border-radius: 10px;
+  min-height: 40px;
+  min-width: 40px;
+}
+
+/* Loading state */
+button:disabled,
+.btn-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Ensure all clickable elements have proper cursor */
+button:not(:disabled),
+a,
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid #7B6FC9;
+  outline-offset: 2px;
+}
+
+/* Mobile touch targets */
+@media (max-width: 768px) {
+  button,
+  [role="button"],
+  .btn {
+    min-height: 48px;
+    padding: 14px 24px;
+  }
+}

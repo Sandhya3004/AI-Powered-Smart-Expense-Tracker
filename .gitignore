@@ -1,0 +1,95 @@
+# ============================================
+# ROOT LEVEL GITIGNORE
+# ============================================
+
+# Node
+node_modules/
+dist/
+build/
+
+# Java / Spring Boot
+target/
+*.jar
+*.war
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+
+# Environment files
+.env
+.env.*
+.env.local
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build outputs
+/dist
+/build
+/out
+
+# Uploads (user data)
+uploads/
+receipts/
+*.jpg
+*.jpeg
+*.png
+!public/*.jpg
+!public/*.png
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage
+coverage/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Spring Boot
+.mvn/
+!**/.mvn/wrapper/maven-wrapper.properties
+mvnw*
+!**/mvnw
+!**/mvnw.cmd
+
+# Misc
+HELP.md
+*.Zone.Identifier
