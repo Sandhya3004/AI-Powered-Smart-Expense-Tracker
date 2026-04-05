@@ -11,7 +11,7 @@ setuptools>=65.5.0
 wheel
 
 # Compatible torch version
-torch==2.1.2
+torch==2.11.0+cpu
 
 # Core utilities
 Pillow
