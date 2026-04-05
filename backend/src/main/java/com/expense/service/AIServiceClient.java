@@ -27,7 +27,7 @@ public class AIServiceClient {
 
     private final RestTemplate restTemplate;
 
-    @Value("${ai.service.url:http://localhost:5000}")
+    @Value("${ai.service.url:https://ai-service-b4ex.onrender.com}")
     private String aiServiceUrl;
 
     public Map<String, Object> processVoice(String audioData, String format) {
