@@ -110,13 +110,18 @@ export const AuthProvider = ({ children }) => {
           })
           
         } catch (error) {
-          // Session invalid or expired - clear storage
+          // Session invalid or expired - clear storage and redirect to login
           console.error('Session validation failed:', error)
           localStorage.removeItem('token')
           localStorage.removeItem('sessionId')
           delete api.defaults.headers.common['Authorization']
           setUser(null)
           setSession(null)
+          
+          // Redirect to login page if token was invalid
+          if (error.response?.status === 401) {
+            window.location.href = '/login'
+          }
         } finally {
           setLoading(false)
         }
