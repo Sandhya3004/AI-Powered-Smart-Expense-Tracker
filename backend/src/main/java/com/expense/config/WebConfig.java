@@ -27,7 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
                     "http://127.0.0.1:5173",
                     "http://127.0.0.1:3000",
                     "http://127.0.0.1:5050",
-                    "http://127.0.0.1:8080"
+                    "http://127.0.0.1:8080",
+                    "https://ai-powered-smart-expense-tracker.vercel.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
