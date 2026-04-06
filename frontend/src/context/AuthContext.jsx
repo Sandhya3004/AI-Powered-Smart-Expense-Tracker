@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
 // API Configuration - Uses environment variable with fallback
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5050/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://expense-tracker-api-1onn.onrender.com/api'
 
 // Create API instance with correct backend URL
 const api = axios.create({

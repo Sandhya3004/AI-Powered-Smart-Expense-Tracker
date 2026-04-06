@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // API Configuration - Uses environment variable with fallback
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5050/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://expense-tracker-api-1onn.onrender.com/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
