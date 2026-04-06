@@ -132,6 +132,7 @@ public class ExpenseService {
             throw new SecurityException("Access denied");
         }
         expense.setAmount(dto.getAmount());
+        expense.setDescription(dto.getDescription());
         expense.setCategory(dto.getCategory());
         expense.setMerchant(dto.getMerchant());
         expense.setPaymentType(dto.getPaymentType());
