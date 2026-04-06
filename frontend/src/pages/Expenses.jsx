@@ -396,14 +396,15 @@ const Expenses = () => {
         status: 'COMPLETED'
       });
 
-      const updatedExpense = response?.data || response;
+      const updatedExpense = response?.data?.data || response?.data || response;
       
-      // Ensure updated expense has an id
-      if (!updatedExpense.id && editingExpense.id) {
-        updatedExpense.id = editingExpense.id;
-      }
-      
-      setExpenses(prev => prev.map(e => (e.id === editingExpense.id || e._id === editingExpense.id) ? { ...e, ...updatedExpense } : e));
+      // Update the expense in the list with new data taking precedence
+      setExpenses(prev => prev.map(e => {
+        if (e.id === editingExpense.id || e._id === editingExpense.id) {
+          return { ...e, ...updatedExpense, id: editingExpense.id };
+        }
+        return e;
+      }));
       
       setShowEditExpenseModal(false);
       setEditingExpense(null);

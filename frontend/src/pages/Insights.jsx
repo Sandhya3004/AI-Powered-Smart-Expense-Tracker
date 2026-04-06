@@ -209,7 +209,7 @@ const Insights = () => {
           </CardHeader>
           <CardContent>
             {insights.monthlyTrend.length > 0 ? (
-              <div className="h-[300px]">
+              <div className="h-[300px] w-full min-h-[300px] min-w-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={insights.monthlyTrend}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#3A3560" />
@@ -260,7 +260,7 @@ const Insights = () => {
           </CardHeader>
           <CardContent>
             {pieData.length > 0 ? (
-              <div className="h-[300px]">
+              <div className="h-[300px] w-full min-h-[300px] min-w-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <RePieChart>
                     <Pie
