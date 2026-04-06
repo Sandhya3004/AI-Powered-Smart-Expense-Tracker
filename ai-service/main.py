@@ -1,99 +1,106 @@
+import os
 import re
+import json
 from datetime import datetime
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-import uvicorn
+from dotenv import load_dotenv
 
-# Try to import services with graceful fallbacks
+# Load environment variables
+load_dotenv()
+
+# Try to import Gemini
+GEMINI_AVAILABLE = False
+genai = None
+if os.getenv("GEMINI_API_KEY"):
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        GEMINI_AVAILABLE = True
+    except ImportError:
+        pass
+
+# Try to import lightweight services
 try:
-    from services import ocr_service, voice_service, budget_planner, group_expenses, bill_reminders, categorizer, anomaly_detector, predictor
+    from services import categorizer, anomaly_detector, predictor
     SERVICES_AVAILABLE = True
-except ImportError as e:
-    print(f"Warning: Some services not available: {e}")
+except ImportError:
     SERVICES_AVAILABLE = False
-    # Create stub modules
-    class StubService:
-        @staticmethod
-        def categorize(*args, **kwargs):
-            return "Other"
-        @staticmethod
-        def detect_anomalies(*args, **kwargs):
-            return []
-        @staticmethod
-        def parse_voice_expense(*args, **kwargs):
-            return {'amount': None, 'category': None, 'description': None, 'date': None, 'merchant': None, 'confidence': 0.0}
-        @staticmethod
-        def extract_receipt_data(*args, **kwargs):
-            return {'amount': 0.0, 'merchant': 'Unknown', 'date': datetime.now().strftime('%Y-%m-%d'), 'description': 'Receipt Expense', 'category': 'Other'}
-        @staticmethod
-        def extract_text_from_image(*args, **kwargs):
-            return ""
-        @staticmethod
-        def extract_expense_from_conversation(*args, **kwargs):
-            return []
-        @staticmethod
-        def train_budget_model(*args, **kwargs):
-            return False, "Service unavailable"
-        @staticmethod
-        def generate_budget_suggestions(*args, **kwargs):
-            return {"error": "Budget service unavailable"}
-        @staticmethod
-        def analyze_budget_performance(*args, **kwargs):
-            return {"error": "Budget service unavailable"}
-        @staticmethod
-        def get_budget_recommendations_for_user(*args, **kwargs):
-            return {"recommendations": []}
-        @staticmethod
-        def create_expense_group(*args, **kwargs):
-            return "stub-group-id"
-        @staticmethod
-        def add_group_expense(*args, **kwargs):
-            return "stub-expense-id"
-        @staticmethod
-        def get_group_summary(*args, **kwargs):
-            return {"error": "Group service unavailable"}
-        @staticmethod
-        def set_group_expense(*args, **kwargs):
-            return False
-        @staticmethod
-        def get_group_manager(*args, **kwargs):
-            return None
-        @staticmethod
-        def create_bill_reminder(*args, **kwargs):
-            return "stub-reminder-id"
-        @staticmethod
-        def get_user_bill_reminders(*args, **kwargs):
-            return []
-        @staticmethod
-        def get_upcoming_bills(*args, **kwargs):
-            return []
-        @staticmethod
-        def snooze_bill_reminder(*args, **kwargs):
-            return False
-        @staticmethod
-        def get_bill_reminder_statistics(*args, **kwargs):
-            return {}
-        @staticmethod
-        def train_model(*args, **kwargs):
-            return None, {}
-        @staticmethod
-        def predict_next_month(*args, **kwargs):
-            return None, "Service unavailable"
-        @staticmethod
-        def forecast_expenses(*args, **kwargs):
-            return [], "unavailable", {}
 
-    ocr_service = StubService()
-    voice_service = StubService()
-    budget_planner = StubService()
-    group_expenses = StubService()
-    bill_reminders = StubService()
+# Create stub services for missing dependencies
+class StubService:
+    @staticmethod
+    def categorize(*args, **kwargs): return "Other"
+    @staticmethod
+    def detect_anomalies(*args, **kwargs): return []
+    @staticmethod
+    def parse_voice_expense(*args, **kwargs):
+        return {'amount': None, 'category': None, 'description': None, 'date': None, 'merchant': None, 'confidence': 0.0}
+    @staticmethod
+    def extract_receipt_data(*args, **kwargs):
+        return {'amount': 0.0, 'merchant': 'Unknown', 'date': datetime.now().strftime('%Y-%m-%d'), 'description': 'Receipt Expense', 'category': 'Other'}
+    @staticmethod
+    def extract_text_from_image(*args, **kwargs): return ""
+    @staticmethod
+    def train_model(*args, **kwargs): return None, {}
+    @staticmethod
+    def predict_next_month(*args, **kwargs): return None, "Service unavailable"
+    @staticmethod
+    def forecast_expenses(*args, **kwargs): return [], "unavailable", {}
+
+if not SERVICES_AVAILABLE:
     categorizer = StubService()
     anomaly_detector = StubService()
     predictor = StubService()
 
-app = FastAPI(title="Expense AI Microservice")
+# Gemini model setup
+model = None
+if GEMINI_AVAILABLE and genai:
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+    except Exception as e:
+        print(f"Gemini model init failed: {e}")
+
+def gemini_categorize(description: str) -> str:
+    """Use Gemini to categorize expense"""
+    if not model:
+        return categorizer.categorize(description) if SERVICES_AVAILABLE else "Other"
+    try:
+        prompt = f"Categorize this expense into one category [Food, Transport, Shopping, Entertainment, Bills, Health, Education, Travel, Groceries, Other]: {description}. Return ONLY the category name."
+        response = model.generate_content(prompt)
+        category = response.text.strip()
+        # Validate category
+        valid_categories = ["Food", "Transport", "Shopping", "Entertainment", "Bills", "Health", "Education", "Travel", "Groceries", "Other"]
+        return category if category in valid_categories else "Other"
+    except Exception as e:
+        print(f"Gemini categorize error: {e}")
+        return "Other"
+
+def gemini_analyze_expense(text: str) -> Dict:
+    """Use Gemini to analyze expense text"""
+    if not model:
+        return {"category": "Other", "insights": "AI service unavailable"}
+    try:
+        prompt = f"""Analyze this expense and extract:
+1. Category (Food, Transport, Shopping, Entertainment, Bills, Health, Education, Travel, Groceries, Other)
+2. Short insights (1 sentence)
+
+Expense: {text}
+
+Return JSON: {{"category": "...", "insights": "..."}}"""
+        response = model.generate_content(prompt)
+        result = response.text.strip()
+        # Try to parse JSON
+        try:
+            return json.loads(result)
+        except:
+            return {"category": "Other", "insights": result}
+    except Exception as e:
+        print(f"Gemini analyze error: {e}")
+        return {"category": "Other", "insights": "Analysis unavailable"}
+
+app = FastAPI(title="Expense AI Microservice - Gemini Powered")
 
 class CategorizeRequest(BaseModel):
     description: str
@@ -129,7 +136,8 @@ class VoiceResponse(BaseModel):
 
 @app.post("/categorize", response_model=CategorizeResponse)
 async def categorize_endpoint(req: CategorizeRequest):
-    category = categorizer.categorize(req.description)
+    # Use Gemini for categorization if available
+    category = gemini_categorize(req.description)
     return CategorizeResponse(category=category)
 
 @app.post("/anomaly", response_model=AnomalyResponse)

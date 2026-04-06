@@ -1,51 +1,17 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-
-# Core web framework
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 python-multipart
 
-# Fix setuptools issue
-setuptools>=65.5.0
-wheel
-
-# Compatible torch version
-torch==2.11.0+cpu
-
-# Core utilities
-Pillow
-numpy<2.0
+numpy==1.26.4
 pandas
 
-# OCR and image processing
-pytesseract
-opencv-python
-easyocr
-
-# Voice processing
-SpeechRecognition
-openai-whisper
-
-# ML libraries
 scikit-learn
 joblib
 
-# NLP
-transformers
-nltk
-spacy
-stanza
+opencv-python-headless
+pytesseract
 
-# Time series forecasting
-prophet
-
-# Deep learning (optional - heavy, remove if not needed)
-# tensorflow==2.19.0
-
-# Database
-redis
-
-# Security
-python-jose[cryptography]
 python-dotenv
+python-jose[cryptography]
+google-generativeai
